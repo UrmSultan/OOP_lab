@@ -1,0 +1,106 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+double power(double base, int exponent) {
+    double result = 1.0;
+    for (int i = 0; i < exponent; ++i) {
+        result *= base;
+    }
+    return result;
+}
+
+char power(char base, int exponent) {
+    return base;
+}
+
+short power(short base, int exponent) {
+    short result = 1;
+    for (int i = 0; i < exponent; ++i) {
+        result *= base;
+    }
+    return result;
+}
+
+long power(long base, int exponent) {
+    long result = 1;
+    for (int i = 0; i < exponent; ++i) {
+        result *= base;
+    }
+    return result;
+}
+
+float power(float base, int exponent) {
+    float result = 1.0f;
+    for (int i = 0; i < exponent; ++i) {
+        result *= base;
+    }
+    return result;
+}
+
+template<typename T>
+void printResult(T base, int exponent) {
+    cout << "power(" << base << ", " << exponent << ") = " << power(base, exponent) << std::endl;
+}
+
+int main() {
+    cout<<"examples:"<<endl;
+    printResult(2.5, 3);
+    int f, exponent;
+    cout<<"What type of data do you want to raise the degree of?:"<<endl;
+    cout<<"1 - double"<<endl;
+    cout<<"2 - char"<<endl;
+    cout<<"3 - short int "<<endl;
+    cout<<"4 - long int"<<endl;
+    cout<<"5 - float"<<endl;
+    cin>>f;
+    switch(f) {
+        case 1:
+            double base_double;
+            cout<<"base=";cin>>base_double;
+            cout<<"exponent=";cin>>exponent;
+            printResult(base_double,exponent);
+            break;
+        case 2:
+            char base_ch;
+            cout<<"base=";cin>>base_ch;
+            cout<<"exponent=";cin>>exponent;
+            int result;
+            if (base_ch >='0' && base_ch<='9') {
+                short base_int = base_ch-'0';
+                printResult(base_int,exponent);
+            }
+            else if ((base_ch>='A'&&base_ch<='Z')||(base_ch>='a'&&base_ch<='z')) {
+                cout<<"Letter's ASCII code will be raised instead of char."<<endl;
+                short base_int = base_ch;
+                printResult(base_int,exponent);
+            }
+            else {
+                cout<<"Unique Char's ASCII code will be raised instead of char."<<endl;
+                printResult(base_ch,exponent);
+            }
+            break;
+        case 3:
+            short int base_shortInt;
+            cout<<"base=";cin>>base_shortInt;
+            cout<<"exponent=";cin>>exponent;
+            printResult(base_shortInt,exponent);
+            break;
+        case 4:
+            long int base_longInt;
+            cout<<"base=";cin>>base_longInt;
+            cout<<"exponent=";cin>>exponent;
+            printResult(base_longInt,exponent);
+            break;
+        case 5:
+            float base_float;
+            cout<<"base=";cin>>base_float;
+            cout<<"exponent=";cin>>exponent;
+            printResult(base_float,exponent);
+            break;
+        default:
+            cout<<"error"<<endl;
+    }
+
+    return 0;
+}

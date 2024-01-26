@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+struct Worker {
+    string surname;
+    int age;
+    string specialization;
+    double averageSalary;
+};
+
+int main() {
+    int numFactories;
+    cout<<"number of Factories = ";cin>>numFactories;
+    vector<vector<Worker>> factories(numFactories);
+
+    for (int i = 0; i < numFactories; ++i) {
+        int numWorkers;
+        cout<<"Enter the number of workers for the Factory #"<<i+1<<": ";
+        cin >> numWorkers;
+
+        for (int j = 0; j < numWorkers; ++j) {
+            Worker worker;
+
+            cout << "Surname: ";
+            cin >> worker.surname;
+            cout << "Age: ";
+            cin >> worker.age;
+            cout << "Specialization: ";
+            cin >> worker.specialization;
+            cout << "Average Salary: ";
+            cin >> worker.averageSalary;
+
+            factories[i].push_back(worker);
+        }
+    }
+
+    for (int i = 0; i < numFactories; ++i) {
+        int numLocksmiths = 0; //Слесари
+        int numTurners = 0; //Токари
+
+        for (const Worker& worker : factories[i]) {
+            if (worker.specialization == "locksmith") {
+                ++numLocksmiths;
+            } else if (worker.specialization == "turner") {
+                ++numTurners;
+            }
+        }
+
+        cout << "Factory #" << i + 1 << ":" << endl;
+        cout << "Number of Locksmiths = " << numLocksmiths << endl;
+        cout << "Number of Turners = " << numTurners << endl;
+
+    }
+
+    return 0;
+}
