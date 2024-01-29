@@ -1,0 +1,71 @@
+#include <iostream>
+#include <fstream>
+#include <stack>
+#include <vector>
+
+using namespace std;
+class TSortNode {
+public:
+    void addWagon(int wagonType) {
+        if (wagonType == 1) {
+            stack1.push(wagonType);
+        } else if (wagonType == 2) {
+            stack2.push(wagonType);
+        }
+    }
+    void splitComposition() {
+        while (!stack1.empty()) {
+            cout << "Wagon of type 1 is sent to one direction." << endl;
+            stack1.pop();
+        }
+
+        while (!stack2.empty()) {
+            cout << "Wagon of type 2 is sent to another direction." << endl;
+            stack2.pop();
+        }
+    }
+
+private:
+    stack<int> stack1;
+    stack<int> stack2;
+};
+
+int main() {
+    TSortNode sortingNode;
+    cout << "Choose the input method (1 - from a file, 2 - from the keyboard): ";
+    int inputChoice;
+    cin >> inputChoice;
+
+    if (inputChoice == 1) {
+        ifstream inputFile("input.txt");
+        if (!inputFile.is_open()) {
+            cout << "Error opening the file." << endl;
+            return 1;
+        }
+
+        int wagonType;
+        while (inputFile >> wagonType) {
+            sortingNode.addWagon(wagonType);
+        }
+
+        inputFile.close();
+    } else if (inputChoice == 2) {
+        cout << "Enter the composition of wagons (1 - wagon type 1, 2 - wagon type 2, 0 - finish input):" << endl;
+        int wagonType;
+
+        while (true) {
+            cin >> wagonType;
+            if (wagonType == 0) {
+                break;
+            }
+
+            sortingNode.addWagon(wagonType);
+        }
+    } else {
+        cout << "Invalid choice." << endl;
+        return 1;
+    }
+    sortingNode.splitComposition();
+
+    return 0;
+}

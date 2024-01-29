@@ -1,0 +1,77 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Aeroflot {
+public:
+    int flightNumber;
+    string departureCity;
+    string destinationCity;
+    string departureTime;
+    string arrivalTime;
+
+    int registrationSection;
+
+    Aeroflot(int flightNum, const string& depCity, const string& destCity,
+             const string& depTime, const string& arrTime, int regSection):
+        flightNumber(flightNum),
+        departureCity(depCity),
+        destinationCity(destCity),
+        departureTime(depTime),
+        arrivalTime(arrTime),
+        registrationSection(regSection) {}
+
+    void displayFlightInfo() const {
+        cout<<setw(5)<<flightNumber
+            <<setw(20)<<departureCity
+            <<setw(20)<<destinationCity
+            <<setw(15)<<departureTime
+            <<setw(15)<<arrivalTime
+            <<setw(10)<<registrationSection<<endl;
+    }
+};
+
+bool compareByDestination(const Aeroflot& a, const Aeroflot& b) {
+    return a.destinationCity < b.destinationCity;
+}
+
+int main() {
+    int numFlights;
+    cout<<"Enter the number of flights: ";
+    cin>>numFlights;
+    vector<Aeroflot> flights;
+
+    for (int i=0; i<numFlights; ++i) {
+        int flightNum, regSection;
+        string depCity, destCity, arrTime, depTime;
+
+        cout<<"Enter details for Flight "<<i + 1<<":"<<endl;
+        cout<<"Flight Number: ";
+        cin>>flightNum;
+        cout<<"Departure City: ";
+        cin>>depCity;
+        cout<<"Destination City: ";
+        cin>>destCity;
+        cout<<"Departure Time: ";
+        cin>>depTime;
+        cout<<"Arrival Time: ";
+        cin>>arrTime;
+        cout<<"Registration Section: ";
+        cin>>regSection;
+
+        flights.emplace_back(flightNum, depCity, destCity,depTime, arrTime, regSection);
+    }
+
+    sort(flights.begin(), flights.end(), compareByDestination);
+
+    cout<<endl<<setw(5)<<"Flight"<<setw(20)<<"Departure"<<setw(20)
+        <<"Destination"<<setw(15)<<"Departure Time"<<setw(15)
+        <<"Arrival Time"<<setw(10)<<"Section"<<endl;
+
+    for (const auto& flight : flights)
+        flight.displayFlightInfo();
+
+    if (flights.empty())
+        cout<<"No flights available."<<endl;
+
+    return 0;
+}

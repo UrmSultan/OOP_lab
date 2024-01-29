@@ -1,0 +1,166 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Student {
+public:
+    string lastName;
+    string firstName;
+    string dateOfBirth;
+    string phoneNumber;
+
+    Student(const string& last, const string& first, const string& dob, const string& phone)
+            : lastName(last), firstName(first), dateOfBirth(dob), phoneNumber(phone) {}
+};
+
+class StudentGroup {
+private:
+    vector<Student> students;
+
+public:
+    void addStudent(const Student& student) {
+        students.push_back(student);
+    }
+
+    void removeStudent(const string& lastName) {
+        students.erase(remove_if(students.begin(), students.end(),
+                                 [lastName](const Student& student) { return student.lastName == lastName; }), students.end());
+    }
+
+    Student* findStudentByVariable(const string& variable, const string& value) {
+        auto it=find_if(students.begin(), students.end(),
+                          [variable, value](const Student& student) {
+                              if (variable == "LastName") return student.lastName == value;
+                              else if (variable == "FirstName") return student.firstName == value;
+                              else if (variable == "DateOfBirth") return student.dateOfBirth == value;
+                              else if (variable == "PhoneNumber") return student.phoneNumber == value;
+                              return false;
+                          });
+
+        return (it != students.end()) ? &(*it) : nullptr;
+    }
+
+    void sortByLastName(bool ascending) {
+        sort(students.begin(), students.end(), [ascending](const Student& a, const Student& b) {
+            if (ascending) {
+                return a.lastName < b.lastName;
+            } else {
+                return a.lastName > b.lastName;
+            }
+        });
+    }
+
+    void printAllStudents() {
+        cout<<"List of Student"<<endl;
+        for (const auto& student : students) {
+            cout<<"Last Name: "<<student.lastName<<"\tFirst Name: "<<student.firstName
+                <<"\tDate of Birth: "<<student.dateOfBirth<<"\tPhone Number: "<<student.phoneNumber<<endl;
+        }
+    }
+};
+
+int main() {
+    StudentGroup group;
+
+    group.addStudent(Student("Ivanov", "Ivan", "01.01.2000", "996777777777"));
+    group.addStudent(Student("Petrov", "Petr", "31.12.2023", "996555555555"));
+    group.addStudent(Student("Sidorov", "Sidor", "30.02.2077", "996888888888"));
+
+    int choice, searchChoice, sortChoice;
+    string searchVariable, searchValue;
+
+    do {
+        cout<<"\n1. Add Student\n2. Remove Student\n3. Find Student by Variable\n"
+              "4. Sort Students by Last Name\n5. Print All Students\n0. Exit\n";
+        cout<<"Enter your choice: ";
+        cin>>choice;
+
+        switch (choice) {
+            case 1: {
+                string last, first, dob, phone;
+                cout<<"Enter Last Name: ";
+                cin>>last;
+                cout<<"Enter First Name: ";
+                cin>>first;
+                cout<<"Enter Date of Birth (DD.MM.YYYY): ";
+                cin>>dob;
+                cout<<"Enter Phone Number: ";
+                cin>>phone;
+
+                group.addStudent(Student(last, first, dob, phone));
+                break;
+            }
+            case 2: {
+                cout<<"Enter Last Name to remove: ";
+                cin>>searchValue;
+                group.removeStudent(searchValue);
+                break;
+            }
+            case 3: {
+                cout<<"Enter your choice: ";
+                cout<<"\n1. Last Name\n2. First Name\n3. Date Of Birth\n4. PhoneNumber\n0. Exit\n";
+                cin>>searchChoice;
+                switch (searchChoice) {
+                    case 1:
+                        searchVariable="LastName";
+                        break;
+                    case 2:
+                        searchVariable="FirstName";
+                        break;
+                    case 3:
+                        searchVariable="DateOfBirth";
+                        break;
+                    case 4:
+                        searchVariable="PhoneNumber";
+                        break;
+                    case 0:
+                        cout<<"Exiting program.\n";
+                        break;
+                    default:
+                        cout<<"Invalid choice. Please enter a valid option.\n";
+                        continue;
+                }
+                cout<<"Enter Value to search: ";
+                cin>>searchValue;
+
+                Student* foundStudent=group.findStudentByVariable(searchVariable, searchValue);
+                if (foundStudent != nullptr) {
+                    cout<<"Student found:\n";
+                    cout<<"Last Name: "<<foundStudent->lastName<<"\tFirst Name: "<<foundStudent->firstName
+                        <<"\tDate of Birth: "<<foundStudent->dateOfBirth<<"\tPhone Number: "<<foundStudent->phoneNumber<<endl;
+                } else {
+                    cout<<"Student not found.\n";
+                }
+                break;
+            }
+            case 4:{
+                cout << "Enter your choice for sorting:\n";
+                cout << "1. Sort by Last Name Ascending\n";
+                cout << "2. Sort by Last Name Descending\n";
+                cin >> sortChoice;
+                switch (sortChoice) {
+                    case 1:
+                        group.sortByLastName(true);
+                        cout << "Students sorted by Last Name (Ascending).\n";
+                        break;
+                    case 2:
+                        group.sortByLastName(false);
+                        cout << "Students sorted by Last Name (Descending).\n";
+                        break;
+                    default:
+                        cout << "Invalid choice. Please enter a valid option.\n";
+                }
+                break;
+            }
+            case 5:
+                group.printAllStudents();
+                break;
+            case 0:
+                cout<<"Exiting program.\n";
+                break;
+            default:
+                cout<<"Invalid choice. Please enter a valid option.\n";
+        }
+    } while (choice!=0);
+
+    return 0;
+}
