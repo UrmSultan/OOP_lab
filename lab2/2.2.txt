@@ -28,13 +28,13 @@ public:
 
     Student* findStudentByVariable(const string& variable, const string& value) {
         auto it=find_if(students.begin(), students.end(),
-                          [variable, value](const Student& student) {
-                              if (variable == "LastName") return student.lastName == value;
-                              else if (variable == "FirstName") return student.firstName == value;
-                              else if (variable == "DateOfBirth") return student.dateOfBirth == value;
-                              else if (variable == "PhoneNumber") return student.phoneNumber == value;
-                              return false;
-                          });
+                        [variable, value](const Student& student) {
+                            if (variable == "LastName") return student.lastName == value;
+                            else if (variable == "FirstName") return student.firstName == value;
+                            else if (variable == "DateOfBirth") return student.dateOfBirth == value;
+                            else if (variable == "PhoneNumber") return student.phoneNumber == value;
+                            return false;
+                        });
 
         return (it != students.end()) ? &(*it) : nullptr;
     }
@@ -148,6 +148,7 @@ int main() {
                         break;
                     default:
                         cout << "Invalid choice. Please enter a valid option.\n";
+                        continue;
                 }
                 break;
             }
