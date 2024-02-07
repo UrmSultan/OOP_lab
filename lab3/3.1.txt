@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+class Timer {
+private:
+    int seconds;
+
+public:
+    explicit Timer(int sec) : seconds(sec) {}
+    explicit Timer(const string& time_str) {
+        int minutes = 0; 
+        sscanf(time_str.c_str(), "%d:%d", &minutes, &seconds);
+        this->seconds = minutes * 60 + seconds;
+    }
+    Timer(int minutes, int seconds) : seconds(minutes * 60 + seconds) {}
+
+    void run() {
+        cout<<"Starting timer..."<<endl;
+        while (seconds > 0) {
+            cout<<"Time left: "<<seconds<<" seconds"<<endl;
+            this_thread::sleep_for(chrono::seconds(1));
+            seconds--;
+        }
+        cout<<"Timer finished! Ringing alarm."<<endl;
+    }
+};
+
+int main() {
+    cout<<"Choose how to enter time:"<<endl;
+    cout<<"1. Seconds"<<endl;
+    cout<<"2. MM:SS (minutes:seconds)"<<endl;
+    cout<<"3. Minutes and Seconds"<<endl;
+    int choice;
+    cin>>choice;
+
+    if (choice == 1) {
+        cout<<"Enter time in seconds: ";
+        int sec;
+        cin>>sec;
+        Timer timer(sec);
+        timer.run();
+    } else if (choice == 2) {
+        cout<<"Enter time in format MM:SS: ";
+        string time_str;
+        cin>>time_str;
+        Timer timer(time_str);
+        timer.run();
+    } else if (choice == 3) {
+        cout<<"Enter time in minutes and seconds: ";
+        int min, sec2;
+        cin>>min>>sec2;
+        Timer timer(min, sec2);
+        timer.run();
+    } else {
+        cout<<"Invalid choice."<<endl;
+    }
+    return 0;
+}

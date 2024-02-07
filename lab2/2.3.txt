@@ -1,9 +1,6 @@
-#include <iostream>
-#include <fstream>
-#include <stack>
-#include <vector>
-
+#include <bits/stdc++.h>
 using namespace std;
+
 class TSortNode {
 public:
     void addWagon(int wagonType) {

@@ -1,0 +1,117 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Soft {
+private:
+    string name;
+    string developer;
+    double size;
+    chrono::system_clock::time_point expirationDate;
+
+public:
+    explicit Soft(string  n = "", string  dev = "", double sz = 0.0)
+            : name(std::move(n)), developer(std::move(dev)), size(sz) {}
+
+    ~Soft() = default;
+
+    [[nodiscard]] int daysUntilExpiration() const {
+        auto now = chrono::system_clock::now();
+        auto diff = expirationDate - now;
+        return chrono::duration_cast<chrono::hours>(diff).count() / 24;
+    }
+
+    void display() const {
+        cout<<"Name: "<<name<<endl;
+        cout<<"Developer: "<<developer<<endl;
+        cout<<"Size: "<<size<<" GB"<<endl;
+        cout<<"Days until expiration: "<<daysUntilExpiration()<<endl;
+    }
+
+    void input() {
+        cout<<"Enter name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout<<"Enter developer: ";
+        getline(cin, developer);
+        cout<<"Enter size (GB): ";
+        cin>>size;
+
+        cout<<"Enter expiration date (DD.MM.YYYY): ";
+        int day, month, year;
+        char discard;
+        cin>>day>>discard>>month>>discard>>year;
+
+        tm expiration_tm = {};
+        expiration_tm.tm_year = year - 1900;
+        expiration_tm.tm_mon = month - 1;
+        expiration_tm.tm_mday = day;
+
+        expirationDate = chrono::system_clock::from_time_t(mktime(&expiration_tm));
+    }
+
+    [[nodiscard]] string getName() const {
+        return name;
+    }
+};
+
+int main() {
+    vector<Soft> softwareList;
+
+    while (true) {
+        cout<<"Choose operation:"<<endl;
+        cout<<"1. Add software"<<endl;
+        cout<<"2. Display all software"<<endl;
+        cout<<"3. Delete software"<<endl;
+        cout<<"4. Exit"<<endl;
+
+        int choice;
+        cin>>choice;
+
+        switch (choice) {
+            case 1: {
+                Soft software;
+                software.input();
+                softwareList.push_back(software);
+                break;
+            }
+            case 2: {
+                if (!softwareList.empty()) {
+                    for (const auto& software : softwareList) {
+                        software.display();
+                        cout<<endl;
+                    }
+                } else {
+                    cout<<"No software installed."<<endl;
+                }
+                break;
+            }
+            case 3: {
+                cout<<"Enter the name of the software to delete: ";
+                string nameToDelete;
+                cin.ignore();
+                getline(cin, nameToDelete);
+
+                bool found = false;
+                for (auto it = softwareList.begin(); it != softwareList.end(); ++it) {
+                    if ((*it).getName() == nameToDelete) {
+                        softwareList.erase(it);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    cout<<"Software not found."<<endl;
+                } else {
+                    cout<<"Software deleted successfully."<<endl;
+                }
+                break;
+            }
+            case 4:
+                cout<<"Exiting program."<<endl;
+                return 0;
+            default:
+                cout<<"Invalid choice. Try again."<<endl;
+        }
+    }
+}
