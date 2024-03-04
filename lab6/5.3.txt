@@ -1,0 +1,50 @@
+#include <iostream>
+
+using namespace std;
+
+
+class Rectangle {
+private:
+    double length;
+    double width;
+
+public:
+    Rectangle(double l, double w) : length(l), width(w) {}
+
+    // Перегруженный метод для прямоугольника
+    double rect_area(double l, double w) {
+        return l * w;
+    }
+
+    // Перегруженный метод для квадрата
+    double rect_area(double side) {
+        return side * side;
+    }
+};
+
+int main() {
+    double length, width, side;
+    char choice;
+
+    cout << "Enter 'r' for rectangle or 's' for square: ";
+    cin >> choice;
+
+    if (choice == 'r') {
+        cout << "Enter length: ";
+        cin >> length;
+        cout << "Enter width: ";
+        Rectangle rectangle(length, width);
+        cin >> width;
+        cout << "Area of rectangle: " << rectangle.rect_area(length, width) << endl;
+    } else if (choice == 's') {
+        cout << "Enter side of square: ";
+        cin >> side;
+
+        Rectangle square(side, side); // исправление: передаем side дважды
+        cout << "Area of square: " << square.rect_area(side) << endl;
+    } else {
+        cout << "Invalid choice! Please enter 'r' or 's'." << endl;
+    }
+
+    return 0;
+}

@@ -12,11 +12,6 @@ private:
 
 public:
     Kamaz(string n, int s_plain, int s_mountains, int s_desert) : name(n), speed_plain(s_plain), speed_mountains(s_mountains), speed_desert(s_desert) {}
-
-    void display() {
-        cout<<"Name: "<<name<<", AVR Speed (km/h):\tPlain = "<<speed_plain<<"\tMountains = "<<speed_mountains<<"\tDesert = "<<speed_desert<< endl;
-    }
-
     friend int FrCreater(Kamaz k, Tatra t);
     friend class Tatra;
 };
@@ -32,9 +27,11 @@ public:
     Tatra(string n, int s_plain, int s_mountains, int s_desert) : name(n), speed_plain(s_plain), speed_mountains(s_mountains), speed_desert(s_desert) {}
 
     void display() {
-        cout<<"Name: "<<name<<", AVR Speed (km/h):\tPlain = "<<speed_plain<<"\tMountains = "<<speed_mountains<<"\tDesert = "<<speed_desert<< endl;
+        cout<<"Name: "<<name<<", AVG Speed (km/h):\tPlain = "<<speed_plain<<"\tMountains = "<<speed_mountains<<"\tDesert = "<<speed_desert<< endl;
     }
-
+    void display(Kamaz k) {
+        cout<<"Name: "<<k.name<<", AVG Speed (km/h):\tPlain = "<<k.speed_plain<<"\tMountains = "<<k.speed_mountains<<"\tDesert = "<<k.speed_desert<< endl;
+    }
     friend int FrCreater(Kamaz k, Tatra t);
     friend class Kamaz;
 };
@@ -43,7 +40,7 @@ int FrCreater(Kamaz k, Tatra t) {
     int result = 0;
     cout<<"---------------------------------"<<endl;
     cout<<"Comparison:"<<endl;
-    cout << "on Plain:" << endl;
+    cout << "on Plain:\t";
     if (k.speed_plain > t.speed_plain) {
         cout << k.name << " is faster on Plain." << endl;
         result++;
@@ -54,7 +51,7 @@ int FrCreater(Kamaz k, Tatra t) {
         cout << "Both have the same speed on Plain." << endl;
     }
 
-    cout << "on Mountains:" << endl;
+    cout << "on Mountains:\t";
     if (k.speed_mountains > t.speed_mountains) {
         cout << k.name << " is faster on Mountains." << endl;
         result++;
@@ -65,7 +62,7 @@ int FrCreater(Kamaz k, Tatra t) {
         cout << "Both have the same speed on Mountains." << endl;
     }
 
-    cout << "on Desert:" << endl;
+    cout << "on Desert:\t";
     if (k.speed_desert > t.speed_desert) {
         cout << k.name << " is faster on Desert." << endl;
         result++;
@@ -96,7 +93,7 @@ int main() {
     Kamaz kamaz(name1, plain1, mountains1, desert1);
     Tatra tatra(name2, plain2, mountains2, desert2);
     cout<<"---------------------------------"<<endl;
-    kamaz.display();
+    tatra.display(kamaz); //  простой пример применения дружественного класса
     tatra.display();
     int result = FrCreater(kamaz, tatra);
     cout<<"---------------------------------"<<endl;
