@@ -1,0 +1,117 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+class Employee {
+protected:
+    string name;
+    string position;
+    double salary;
+
+public:
+    // Default constructor
+    Employee() {
+        name = "Unknown";
+        position = "Unknown";
+        salary = 0.0;
+    }
+
+    // Parameterized constructor
+    Employee(string _name, string _position, double _salary) {
+        name = _name;
+        position = _position;
+        salary = _salary;
+    }
+
+    // Destructor
+    ~Employee() {}
+
+    // Calculate annual salary
+    double calculateAnnualSalary() {
+        return salary * 12;
+    }
+
+    // Display information about the employee
+    void displayInfo() {
+        cout << "Name: " << name << endl;
+        cout << "Position: " << position << endl;
+        cout << "Monthly Salary: " << salary << endl;
+        cout << "Annual Salary: " << calculateAnnualSalary() << endl;
+    }
+};
+
+class Manager : public Employee {
+private:
+    double annual_bonus;
+    string company_car;
+    int stock_options;
+
+public:
+    // Default constructor
+    Manager() : Employee() {
+        annual_bonus = 0.0;
+        company_car = "None";
+        stock_options = 0;
+    }
+
+    // Parameterized constructor
+    Manager(string _name, string _position, double _salary, double _annual_bonus, string _company_car, int _stock_options)
+            : Employee(_name, _position, _salary) {
+        annual_bonus = _annual_bonus;
+        company_car = _company_car;
+        stock_options = _stock_options;
+    }
+
+    // Destructor
+    ~Manager() {}
+
+    // Display information about the manager
+    void displayInfo() {
+        Employee::displayInfo();
+        cout << "Annual Bonus: " << annual_bonus << endl;
+        cout << "Company Car: " << company_car << endl;
+        cout << "Stock Options: " << stock_options << endl;
+    }
+};
+
+int main() {
+    ifstream inputFile("input.txt");
+    if (!inputFile) {
+        cerr << "Failed to open the input file." << endl;
+        return 1;
+    }
+
+    string type;
+    while (inputFile >> type) {
+        if (type == "Employee") {
+            string name, position;
+            double salary;
+            inputFile >> name >> position >> salary;
+            Employee emp(name, position, salary);
+            cout << "Employee Information:" << endl;
+            emp.displayInfo();
+            cout << endl;
+        } else if (type == "Manager") {
+            string name, position, company_car;
+            double salary, annual_bonus;
+            int stock_options;
+            inputFile >> name >> position >> salary >> annual_bonus >> company_car >> stock_options;
+            Manager mgr(name, position, salary, annual_bonus, company_car, stock_options);
+            cout << "Manager Information:" << endl;
+            mgr.displayInfo();
+            cout << endl;
+        } else {
+            cerr << "Unknown type encountered in input file." << endl;
+        }
+    }
+
+    inputFile.close();
+
+    return 0;
+}
+
+
+//Employee Sultan Developer 5000
+//Manager aZA Manager 7000 2000 ToyotaCamry 1000

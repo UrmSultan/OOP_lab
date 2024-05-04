@@ -1,0 +1,115 @@
+#include <iostream>
+
+using namespace std;
+
+
+class Figure {
+public:
+    virtual double area() const = 0;
+    virtual double perimeter() const = 0;
+    virtual void input() = 0;
+};
+
+
+class Rectangle : public Figure {
+private:
+    double width;
+    double height;
+public:
+    Rectangle() : width(0), height(0) {}
+    Rectangle(double w, double h) : width(w), height(h) {}
+
+    double area() const override {
+        return width * height;
+    }
+
+    double perimeter() const override {
+        return 2 * (width + height);
+    }
+
+    void input() override {
+        cout << "Rectangle\nh=";
+        cin >> height;
+        cout << "w=";
+        cin >> width;
+    }
+};
+
+class Circle : public Figure {
+private:
+    double radius;
+public:
+    Circle() : radius(0) {}
+    Circle(double r) : radius(r) {}
+
+    double area() const override {
+        return 3.14159 * radius * radius;
+    }
+
+    double perimeter() const override {
+        return 2 * 3.14159 * radius;
+    }
+
+    void input() override {
+        cout << "Circle\nradius=";
+        cin >> radius;
+    }
+};
+
+class Trapezium : public Figure {
+private:
+    double side1;
+    double side2;
+    double height;
+public:
+    Trapezium() : side1(0), side2(0), height(0) {}
+    Trapezium(double s1, double s2, double h) : side1(s1), side2(s2), height(h) {}
+
+    double area() const override {
+        return (side1 + side2) * height / 2;
+    }
+
+    double perimeter() const override {
+        return side1 + side2 + 2 * height; // Perimeter of trapezium with unequal sides
+    }
+
+    void input() override {
+        cout << "Trapezium\nside1=";
+        cin >> side1;
+        cout << "side2=";
+        cin >> side2;
+        cout << "height=";
+        cin >> height;
+    }
+};
+
+int main() {
+    int choice;
+    cout << "Choose a figure:\n1. Rectangle\n2. Circle\n3. Trapezium\n";
+    cin >> choice;
+
+    Figure* figure;
+    switch (choice) {
+        case 1:
+            figure = new Rectangle();
+            break;
+        case 2:
+            figure = new Circle();
+            break;
+        case 3:
+            figure = new Trapezium();
+            break;
+        default:
+            cout << "Invalid choice, exiting...\n";
+            return 1;
+    }
+
+    figure->input();
+
+    cout << "Area: " << figure->area() << endl;
+    cout << "Perimeter: " << figure->perimeter() << endl;
+
+    delete figure;
+
+    return 0;
+}

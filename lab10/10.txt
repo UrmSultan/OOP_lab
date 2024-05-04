@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ANSI_COLOR_GREEN "\033[32m"
+#define ANSI_COLOR_RESET "\033[0m"
+#define ANSI_COLOR_RED "\033[31m"
+
+class PVO {
+private:
+    static double p;
+
+public:
+    static void setProbability(double probability) {
+        p = probability;
+    }
+    void setProbability1(double probability, int n) {
+        p = probability;
+    }
+    static bool shootDownPlane(int n) {
+        srand(time(nullptr));
+
+        for (int i = 0; i < n; i++) {
+            double random = static_cast<double>(rand()) / RAND_MAX;
+            if (random < p) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    static double estimatedProbability(int n) {
+        return 1 - pow(1 - p, n);
+    }
+};
+
+double PVO::p = 0.0; // инициализация статического поля
+
+
+int main() {
+    system("chcp 65001");
+
+    int n;
+    cout<<"Введите количество выстрелов (n): ";
+    cin>>n;
+
+    double p;
+    cout<<"Введите вероятность попадания по самолету (p): ";
+    cin>>p;
+    PVO::setProbability(p);
+
+    for (int i = 0; i < n; i++) {
+        bool result = PVO::shootDownPlane(i);
+        double estimated = PVO::estimatedProbability(i);
+        cout<<"Оценочная вероятность поражения цели при "<<i+1<<" выстрелах с вероятностью попадания "<<p<<": "<<estimated<<endl;
+        if (result) {
+            cout<<"Результат стрельбы: "<<ANSI_COLOR_GREEN<<"Цель уничтожена "<<ANSI_COLOR_RESET<<i+1<<"-м выстрелом"<<endl;
+            break;
+        }
+        else if (i==n-1)
+            cout<<"Результат стрельбы: "<<ANSI_COLOR_RED<<" Цель не сбита"<<ANSI_COLOR_RESET<<endl;
+    }
+
+    return 0;
+}

@@ -1,0 +1,119 @@
+#include <iostream>
+#include <fstream>
+
+class Array {
+protected:
+    static const int MAX_SIZE = 100; // Максимальный размер массива
+    unsigned int elements[MAX_SIZE]; // Массив элементов
+    unsigned int count; // Количество элементов в массиве
+
+public:
+    // Конструктор инициализации
+    Array(unsigned int size, unsigned int init_value = 0) : count(size) {
+        for (int i = 0; i < size; ++i) {
+            elements[i] = init_value;
+        }
+    }
+
+    // Виртуальная функция поэлементного сложения массивов
+    virtual void add(const Array& other) {
+        unsigned int min_count = std::min(count, other.count);
+        for (int i = 0; i < min_count; ++i) {
+            elements[i] += other.elements[i];
+        }
+    }
+
+    // Вывод элементов массива
+    void display() const {
+        for (int i = 0; i < count; ++i) {
+            std::cout << elements[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    // Заполнение массива данными из файла
+    void fillFromFile(std::ifstream& file) {
+        for (int i = 0; i < count; ++i) {
+            file >> elements[i];
+        }
+    }
+};
+
+// Первый подкласс
+class ArraySubclass1 : public Array {
+public:
+    ArraySubclass1(unsigned int size, unsigned int init_value = 0) : Array(size, init_value) {}
+
+    // Переопределение виртуальной функции сложения
+    void add(const Array& other) override {
+        Array::add(other); // Вызов базовой реализации
+        std::cout << "Using add() from ArraySubclass1" << std::endl;
+    }
+};
+
+// Второй подкласс
+class ArraySubclass2 : public Array {
+public:
+    ArraySubclass2(unsigned int size, unsigned int init_value = 0) : Array(size, init_value) {}
+
+    // Переопределение виртуальной функции сложения
+    void add(const Array& other) override {
+        Array::add(other); // Вызов базовой реализации
+        std::cout << "Using add() from ArraySubclass2" << std::endl;
+    }
+};
+
+int main() {
+    std::ifstream inputFile("input.txt"); // Открытие файла для чтения
+
+    unsigned int size1, size2;
+    if (inputFile.is_open()) {
+        inputFile >> size1 >> size2; // Чтение размеров массивов из файла
+
+        ArraySubclass1 array1(size1, 1); // Создание объекта первого подкласса
+        ArraySubclass2 array2(size2, 2); // Создание объекта второго подкласса
+
+        // Заполнение массивов данными из файла
+        array1.fillFromFile(inputFile);
+        array2.fillFromFile(inputFile);
+
+        inputFile.close(); // Закрытие файла
+
+
+        std::cout << "Array 1: ";
+        array1.display();
+        std::cout << "Array 2: ";
+        array2.display();
+
+        // Вызов виртуальной функции поэлементного сложения для array1
+        array1.add(array2);
+        std::cout << "Array 1 after addition: ";
+        array1.display();
+
+        // Вызов виртуальной функции поэлементного сложения для array2
+        array2.add(array1);
+        std::cout << "Array 2 after addition: ";
+        array2.display();
+
+        // Создание объекта базового класса и вызов виртуальной функции
+        std::cout << "a pointer to an object of the base class (Array) is created"<<std::endl;
+        Array* baseArray;
+        std::cout << "baseArray = &array1"<<std::endl;
+        baseArray = &array1;
+        baseArray->add(array2);
+        std::cout << "Base array after addition: ";
+        baseArray->display();
+
+        baseArray = &array2;
+        std::cout << "baseArray = &array2"<<std::endl;
+        baseArray->add(array1);
+        std::cout << "Base array after addition: ";
+        baseArray->display();
+    } else {
+        std::cerr << "Unable to open input file." << std::endl;
+        return 1;
+    }
+
+
+    return 0;
+}

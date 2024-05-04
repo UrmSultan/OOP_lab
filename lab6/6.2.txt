@@ -1,0 +1,95 @@
+#include <iostream>
+#include <fstream>
+#include <cstring>
+
+using namespace std;
+
+
+class Display {
+protected:
+    char type[32];
+    long colors;
+    int x_resolution;
+    int y_resolution;
+
+public:
+    Display(const char* _type, long _colors, int _x_resolution, int _y_resolution) : colors(_colors), x_resolution(_x_resolution), y_resolution(_y_resolution) {
+        strncpy(type, _type, 31);
+        type[31] = '\0';
+    }
+
+    void Show() {
+        cout << "Display Type: " << type << endl;
+        cout << "Colors: " << colors << endl;
+        cout << "Resolution: " << x_resolution << "x" << y_resolution << endl;
+    }
+};
+
+class MotherBoard {
+protected:
+    int processor;
+    int speed;
+    int RAM;
+
+public:
+    MotherBoard(int _processor, int _speed, int _RAM) : processor(_processor), speed(_speed), RAM(_RAM) {}
+
+    void Show() {
+        cout << "Processor Type: " << processor << endl;
+        cout << "Processor Speed: " << speed << " MHz" << endl;
+        cout << "RAM: " << RAM << " GB" << endl;
+    }
+};
+
+class Computer : public Display, public MotherBoard {
+private:
+    char name[64];
+    int hard_disk;
+
+public:
+    Computer(const char* _name, int _hard_disk, const char* display_type, long display_colors, int display_x_resolution, int display_y_resolution, int mb_processor, int mb_speed, int mb_RAM)
+            : Display(display_type, display_colors, display_x_resolution, display_y_resolution),
+              MotherBoard(mb_processor, mb_speed, mb_RAM),
+              hard_disk(_hard_disk) {
+        strncpy(name, _name, 63);
+        name[63] = '\0';
+    }
+
+    void Show() {
+        cout << "Computer Name: " << name << endl;
+        Display::Show();
+        MotherBoard::Show();
+        cout << "Hard Disk Size: " << hard_disk << " GB" << endl;
+    }
+};
+
+int main() {
+    ifstream inputFile("input.txt");
+
+    if (!inputFile.is_open()) {
+        cerr << "Failed to open input file." << endl;
+        return 1;
+    }
+
+    char name[64];
+    int hard_disk;
+    char display_type[32];
+    long display_colors;
+    int display_x_resolution;
+    int display_y_resolution;
+    int mb_processor;
+    int mb_speed;
+    int mb_RAM;
+
+    inputFile >> name >> hard_disk >> display_type >> display_colors >> display_x_resolution >> display_y_resolution >> mb_processor >> mb_speed >> mb_RAM;
+
+    Computer myComputer(name, hard_disk, display_type, display_colors, display_x_resolution, display_y_resolution, mb_processor, mb_speed, mb_RAM);
+    myComputer.Show();
+
+    inputFile.close();
+
+    return 0;
+}
+
+//MyPC 500 LCD 16777216 1920 1080 1 3000 8
+

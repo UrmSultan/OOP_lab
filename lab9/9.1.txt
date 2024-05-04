@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+#include <windows.h>
+using namespace std;
+
+const int LIMIT = 100;
+
+class OutOfBoundsException : public exception {
+public:
+    const char* what() const noexcept override {
+        return "Выход за пределы массива!";
+    }
+};
+
+class SafeArray {
+private:
+    int arr[LIMIT];
+public:
+    void putElement(int n, int elValue) {
+        if (n < 0 || n >= LIMIT) {
+            throw OutOfBoundsException();
+        }
+        arr[n] = elValue;
+    }
+
+    int getElement(int n) const {
+        if (n < 0 || n >= LIMIT) {
+            throw OutOfBoundsException();
+        }
+        return arr[n];
+    }
+};
+
+int main() {
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    SafeArray safeArray;
+    try {
+        for (int j = 0; j < LIMIT; j++) {
+            safeArray.putElement(j, j * 10);
+        }
+
+        for (int j = 0; j < LIMIT; j++) {
+            int temp = safeArray.getElement(j);
+            cout << "Array[" << j << "] = " << temp << endl;
+        }
+    }
+    catch (const OutOfBoundsException& e) {
+        cerr << "ERROR: " << e.what() << endl;
+    }
+
+    return 0;
+}

@@ -1,0 +1,49 @@
+#include <iostream>
+
+class Currency {
+public:
+    virtual double toRubles(double amount) const = 0;
+    virtual void display(double amount) const = 0;
+    virtual ~Currency() {}
+};
+
+class Dollar : public Currency {
+public:
+    double toRubles(double amount) const override {
+        return amount * 90; // Примерный курс доллара к рублю
+    }
+
+    void display(double amount) const override {
+        std::cout << "Amount in Euros: " << toRubles(amount) / 100 << std::endl;
+    }
+};
+
+class Euro : public Currency {
+public:
+    double toRubles(double amount) const override {
+        return amount * 100; // Примерный курс евро к рублю
+    }
+
+    void display(double amount) const override {
+        std::cout << "Amount in Dollars: " << toRubles(amount) / 90 << std::endl;
+    }
+};
+
+int main() {
+    Dollar dollar;
+    Euro euro;
+
+    double amount;
+
+    std::cout << "Enter amount in Dollars: ";
+    std::cin >> amount;
+    std::cout << "Amount in Rubles: " << dollar.toRubles(amount) << std::endl;
+    dollar.display(amount);
+
+    std::cout << "\nEnter amount in Euros: ";
+    std::cin >> amount;
+    std::cout << "Amount in Rubles: " << euro.toRubles(amount) << std::endl;
+    euro.display(amount);
+
+    return 0;
+}

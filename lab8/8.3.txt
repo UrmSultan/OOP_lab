@@ -1,0 +1,88 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+
+template<typename T>
+class Stack {
+private:
+    vector<T> elements;
+
+public:
+    void push(const T& element) {
+        elements.push_back(element);
+    }
+
+    void pop() {
+        if (!elements.empty()) {
+            elements.pop_back();
+        }
+    }
+
+    const T& top() const {
+        return elements.back();
+    }
+
+    bool empty() const {
+        return elements.empty();
+    }
+};
+
+struct Worker {
+    string surname;
+    int age;
+    string specialization;
+    double averageSalary;
+};
+
+int main() {
+    int numFactories;
+    cout << "Number of Factories = ";
+    cin >> numFactories;
+
+    vector<Stack<Worker>> factories(numFactories);
+
+    for (int i = 0; i < numFactories; ++i) {
+        int numWorkers;
+        cout << "Enter the number of workers for the Factory #" << i + 1 << ": ";
+        cin >> numWorkers;
+
+        for (int j = 0; j < numWorkers; ++j) {
+            Worker worker;
+
+            cout << "Surname: ";
+            cin >> worker.surname;
+            cout << "Age: ";
+            cin >> worker.age;
+            cout << "Specialization: ";
+            cin >> worker.specialization;
+            cout << "Average Salary: ";
+            cin >> worker.averageSalary;
+
+            factories[i].push(worker);
+        }
+    }
+
+    for (int i = 0; i < numFactories; ++i) {
+        int numLocksmiths = 0; // Слесари
+        int numTurners = 0;    // Токари
+
+        while (!factories[i].empty()) {
+            const Worker& worker = factories[i].top();
+            if (worker.specialization == "locksmith") {
+                ++numLocksmiths;
+            } else if (worker.specialization == "turner") {
+                ++numTurners;
+            }
+            factories[i].pop();
+        }
+
+        cout << "Factory #" << i + 1 << ":" << endl;
+        cout << "Number of Locksmiths = " << numLocksmiths << endl;
+        cout << "Number of Turners = " << numTurners << endl;
+    }
+
+    return 0;
+}

@@ -1,0 +1,59 @@
+#include <iostream>
+
+using namespace std;
+
+
+template <typename T>
+T findMax(const T array[], int size) {
+    T max = array[0];
+    for (int i = 1; i < size; ++i) {
+        if (array[i] > max) {
+            max = array[i];
+        }
+    }
+    return max;
+}
+
+template <typename T, typename T2>
+void sortArray(T array[], int size, T2 num) {
+    for (int i = 0; i < size - 1; ++i) {
+        for (int j = 0; j < size - i - 1; ++j) {
+            if (array[j] > array[j + 1]) {
+                T temp = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = temp;
+            }
+        }
+    }
+    for (int i=0; i < size - 1; ++i) {
+        array[i]+=num;
+    }
+}
+
+int main() {
+    // Пример использования шаблонов функций для массива типа int
+    int intArray[] = {3, 7, 1, 9, 4};
+    int intArraySize = sizeof(intArray) / sizeof(int);
+
+    cout << "Max element in intArray: " << findMax(intArray, intArraySize) << endl;
+    sortArray(intArray, intArraySize, 56);
+    cout << "Sorted intArray: ";
+    for (int i = 0; i < intArraySize; ++i) {
+        cout << intArray[i] << " ";
+    }
+    cout << endl;
+
+    // Пример использования шаблонов функций для массива типа double
+    double doubleArray[] = {3.5, 1.7, 9.2, 4.8, 2.1};
+    int doubleArraySize = sizeof(doubleArray) / sizeof(double);
+
+    cout << "Max element in doubleArray: " << findMax(doubleArray, doubleArraySize) << endl;
+    sortArray(doubleArray, doubleArraySize,3.14);
+    cout << "Sorted doubleArray: ";
+    for (int i = 0; i < doubleArraySize; ++i) {
+        cout << doubleArray[i] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}

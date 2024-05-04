@@ -1,0 +1,48 @@
+#include <iostream>
+#include <random>
+#include <type_traits>
+
+using namespace std;
+template<typename T, size_t size>
+class ArraySum {
+private:
+    T array[size];
+
+public:
+    ArraySum() {
+        static_assert(is_arithmetic<T>::value, "Template argument must be an arithmetic type.");
+
+        // Заполнение массивов случайными числами
+        random_device rd;
+        mt19937 gen(rd());
+
+        if constexpr (is_integral<T>::value) {
+            uniform_int_distribution<T> dis(1, 100); // Диапазон случайных чисел для целочисленных типов
+            for (size_t i = 0; i < size; ++i)
+                array[i] = dis(gen);
+        } else {
+            uniform_real_distribution<T> dis(1.0, 100.0); // Диапазон случайных чисел для вещественных типов
+            for (size_t i = 0; i < size; ++i)
+                array[i] = dis(gen);
+        }
+    }
+
+    T sum() {
+        T sum = 0;
+        for (size_t i = 0; i < size; ++i)
+            sum += array[i];
+        return sum;
+    }
+};
+
+int main() {
+    // Пример использования шаблона класса для массивов типа int размером 5
+    ArraySum<int, 5> intArraySum;
+    cout << "Sum of int arrays: " << intArraySum.sum() << endl;
+
+    // Пример использования шаблона класса для массивов типа double размером 3
+    ArraySum<double, 3> doubleArraySum;
+    cout << "Sum of double arrays: " << doubleArraySum.sum() << endl;
+
+    return 0;
+}

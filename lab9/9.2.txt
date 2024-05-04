@@ -1,0 +1,118 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+class Tatra;
+
+class Kamaz {
+private:
+    string name;
+    int speed_plain;
+    int speed_mountains;
+    int speed_desert;
+
+public:
+    Kamaz(string n, int s_plain, int s_mountains, int s_desert) : name(n), speed_plain(s_plain), speed_mountains(s_mountains), speed_desert(s_desert) {}
+    friend int FrCreater(Kamaz k, Tatra t);
+    friend class Tatra;
+};
+
+class Tatra {
+private:
+    string name;
+    int speed_plain;
+    int speed_mountains;
+    int speed_desert;
+
+public:
+    Tatra(string n, int s_plain, int s_mountains, int s_desert) : name(n), speed_plain(s_plain), speed_mountains(s_mountains), speed_desert(s_desert) {}
+
+    void display() {
+        cout<<"Name: "<<name<<", AVG Speed (km/h):\tPlain = "<<speed_plain<<"\tMountains = "<<speed_mountains<<"\tDesert = "<<speed_desert<< endl;
+    }
+    void display(Kamaz k) {
+        cout<<"Name: "<<k.name<<", AVG Speed (km/h):\tPlain = "<<k.speed_plain<<"\tMountains = "<<k.speed_mountains<<"\tDesert = "<<k.speed_desert<< endl;
+    }
+    friend int FrCreater(Kamaz k, Tatra t);
+    friend class Kamaz;
+};
+
+int FrCreater(Kamaz k, Tatra t) {
+    int result = 0;
+    cout<<"---------------------------------"<<endl;
+    cout<<"Comparison:"<<endl;
+    cout << "on Plain:\t";
+    if (k.speed_plain > t.speed_plain) {
+        cout << k.name << " is faster on Plain." << endl;
+        result++;
+    } else if (k.speed_plain < t.speed_plain) {
+        cout << t.name << " is faster on Plain." << endl;
+        result--;
+    } else {
+        cout << "Both have the same speed on Plain." << endl;
+    }
+
+    cout << "on Mountains:\t";
+    if (k.speed_mountains > t.speed_mountains) {
+        cout << k.name << " is faster on Mountains." << endl;
+        result++;
+    } else if (k.speed_mountains < t.speed_mountains) {
+        cout << t.name << " is faster on Mountains." << endl;
+        result--;
+    } else {
+        cout << "Both have the same speed on Mountains." << endl;
+    }
+
+    cout << "on Desert:\t";
+    if (k.speed_desert > t.speed_desert) {
+        cout << k.name << " is faster on Desert." << endl;
+        result++;
+    } else if (k.speed_desert < t.speed_desert) {
+        cout << t.name << " is faster on Desert." << endl;
+        result--;
+    } else {
+        cout << "Both have the same speed on Desert." << endl;
+    }
+
+    return result;
+}
+
+int main() {
+    ifstream inputFile("input.txt");
+    if (!inputFile.is_open()) {
+        cerr << "Failed to open input file." << endl;
+        return 1;
+    }
+
+    try {
+        string name1, name2;
+        int plain1, mountains1, desert1;
+        int plain2, mountains2, desert2;
+
+        if (!(inputFile >> name1 >> plain1 >> mountains1 >> desert1) || !(inputFile >> name2 >> plain2 >> mountains2 >> desert2)) {
+            throw runtime_error("Error reading input file: Invalid format.");
+        }
+
+        Kamaz kamaz(name1, plain1, mountains1, desert1);
+        Tatra tatra(name2, plain2, mountains2, desert2);
+        cout<<"---------------------------------"<<endl;
+        tatra.display(kamaz); //  простой пример применения дружественного класса
+        tatra.display();
+        int result = FrCreater(kamaz, tatra);
+        cout<<"---------------------------------"<<endl;
+        cout<<"RESULT:"<<endl;
+        if (result > 0)
+            cout << "KAMAZ wins." << endl;
+        else if (result < 0)
+            cout << "Tatra wins." << endl;
+        else
+            cout << "It's a tie." << endl;
+    } catch (const exception& e) {
+        cerr << "Exception caught: " << e.what() << endl;
+    }
+
+    inputFile.close();
+
+    return 0;
+}

@@ -1,0 +1,271 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <algorithm> // Для использования функции std::remove_if
+
+using namespace std;
+
+// Структура для представления записи о продавце или покупателе
+struct Record {
+    string itemName;
+    int quantity;
+    float price;
+    string deliveryTerms;
+    string paymentMethod;
+    string contactInfo;
+    string note;
+};
+
+// Функция для чтения записей из файла
+vector<Record> readRecordsFromFile(const string& filename) {
+    vector<Record> records;
+    ifstream file(filename);
+    if (file.is_open()) {
+        Record record;
+        while (getline(file, record.itemName)) {
+            file >> record.quantity >> record.price;
+            file.ignore(); // Ignore newline character
+            getline(file, record.deliveryTerms);
+            getline(file, record.paymentMethod);
+            getline(file, record.contactInfo);
+            getline(file, record.note);
+            records.push_back(record);
+        }
+        file.close();
+    }
+    return records;
+}
+
+// Функция для записи записей в файл
+void writeRecordsToFile(const vector<Record>& records, const string& filename) {
+    ofstream file(filename);
+    if (file.is_open()) {
+        for (const auto& record : records) {
+            file << record.itemName << endl;
+            file << record.quantity << " " << record.price << endl;
+            file << record.deliveryTerms << endl;
+            file << record.paymentMethod << endl;
+            file << record.contactInfo << endl;
+            file << record.note << endl;
+        }
+        file.close();
+    }
+}
+
+// Функция для добавления записи
+void addRecord(vector<Record>& records) {
+    Record newRecord;
+    cout << "Enter item name: ";
+    getline(cin, newRecord.itemName);
+    cout << "Enter quantity: ";
+    cin >> newRecord.quantity;
+    cout << "Enter price: ";
+    cin >> newRecord.price;
+    cin.ignore(); // Ignore newline character
+    cout << "Enter delivery terms: ";
+    getline(cin, newRecord.deliveryTerms);
+    cout << "Enter payment method: ";
+    getline(cin, newRecord.paymentMethod);
+    cout << "Enter contact info: ";
+    getline(cin, newRecord.contactInfo);
+    cout << "Enter note: ";
+    getline(cin, newRecord.note);
+    records.push_back(newRecord);
+}
+
+// Функция для вывода записи
+void printRecord(const Record& record) {
+    cout << "Item Name: " << record.itemName << endl;
+    cout << "Quantity: " << record.quantity << endl;
+    cout << "Price: " << record.price << endl;
+    cout << "Delivery Terms: " << record.deliveryTerms << endl;
+    cout << "Payment Method: " << record.paymentMethod << endl;
+    cout << "Contact Info: " << record.contactInfo << endl;
+    cout << "Note: " << record.note << endl;
+}
+
+// Функция для показа всех записей
+void showAllRecords(const vector<Record>& records) {
+    for (const auto& record : records) {
+        printRecord(record);
+        cout << endl;
+    }
+}
+
+// Функция для формирования объявления для печати
+string generateAdvertisement(const Record& record) {
+    string advertisement;
+    advertisement += "Item Name: " + record.itemName + "\n";
+    advertisement += "Price: " + to_string(record.price) + "\n";
+    advertisement += "Contact Info: " + record.contactInfo + "\n";
+    advertisement += "---------------------------------\n";
+    return advertisement;
+}
+
+// Функция для печати всех объявлений
+void printAllAdvertisements(const vector<Record>& records) {
+    for (const auto& record : records) {
+        cout << generateAdvertisement(record) << endl;
+    }
+}
+
+// Функция для поиска записей по наименованию товара
+void searchRecordsByName(const vector<Record>& records, const string& itemName) {
+    try {
+        bool found = false;
+        for (const auto& record : records) {
+            if (record.itemName == itemName) {
+                printRecord(record);
+                found = true;
+            }
+        }
+        if (!found) {
+            cout << "Record not found." << endl;
+        }
+    } catch (const std::invalid_argument& e) {
+        cout << "Invalid input. Please enter a valid item name." << endl;
+    }
+}
+
+// Функция для перемещения записи в архив после купли-продажи
+void moveToArchive(const vector<Record>& records, vector<Record>& archive, const string& itemName) {
+    auto it = find_if(records.begin(), records.end(), [&](const Record& record) {
+        return record.itemName == itemName;
+    });
+    if (it != records.end()) {
+        archive.push_back(*it);
+        cout << "Record moved to archive successfully." << endl;
+    } else {
+        cout << "Record not found." << endl;
+    }
+}
+
+// Функция для показа всех записей в архиве
+void showArchive(const vector<Record>& archive) {
+    cout << "Archive:" << endl;
+    for (const auto& record : archive) {
+        printRecord(record);
+        cout << endl;
+    }
+}
+
+void deleteFromRecords(vector<Record>& records, const string& itemName) {
+    records.erase(remove_if(records.begin(), records.end(), [&](const Record& record) {
+        return record.itemName == itemName;
+    }), records.end());
+}
+
+int main() {
+    vector<Record> sellers = readRecordsFromFile("sellers.txt");
+    vector<Record> buyers = readRecordsFromFile("buyers.txt");
+    vector<Record> sellerArchive = readRecordsFromFile("seller_archive.txt");
+    vector<Record> buyerArchive = readRecordsFromFile("buyer_archive.txt");
+
+    int choice;
+    do {
+        cout << "Menu:" << endl;
+        cout << "1. Add seller record" << endl;
+        cout << "2. Add buyer record" << endl;
+        cout << "3. Show all seller records" << endl;
+        cout << "4. Show all buyer records" << endl;
+        cout << "5. Print all seller advertisements" << endl;
+        cout << "6. Print all buyer advertisements" << endl;
+        cout << "7. Search seller records by item name" << endl;
+        cout << "8. Search buyer records by item name" << endl;
+        cout << "9. Move seller record to archive (after successful sale)" << endl;
+        cout << "10. Move buyer record to archive (after successful purchase)" << endl;
+        cout << "11. Delete seller record" << endl;
+        cout << "12. Delete buyer record" << endl;
+        cout << "13. Show archive" << endl;
+        cout << "14. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore(); // Ignore newline character
+
+        switch (choice) {
+            case 1:
+                addRecord(sellers);
+                break;
+            case 2:
+                addRecord(buyers);
+                break;
+            case 3:
+                showAllRecords(sellers);
+                break;
+            case 4:
+                showAllRecords(buyers);
+                break;
+            case 5:
+                printAllAdvertisements(sellers);
+                break;
+            case 6:
+                printAllAdvertisements(buyers);
+                break;
+            case 7:
+            {
+                string itemName;
+                cout << "Enter item name to search: ";
+                getline(cin, itemName);
+                searchRecordsByName(sellers, itemName);
+            }
+                break;
+            case 8:
+            {
+                string itemName;
+                cout << "Enter item name to search: ";
+                getline(cin, itemName);
+                searchRecordsByName(buyers, itemName);
+            }
+                break;
+            case 9:
+            {
+                string itemName;
+                cout << "Enter item name to move to archive: ";
+                getline(cin, itemName);
+                moveToArchive(sellers, sellerArchive, itemName);
+                deleteFromRecords(sellers, itemName);
+            }
+                break;
+            case 10:
+            {
+                string itemName;
+                cout << "Enter item name to move to archive: ";
+                getline(cin, itemName);
+                moveToArchive(buyers, buyerArchive, itemName);
+            }
+                break;
+            case 11:
+            {
+                string itemName;
+                cout << "Enter item name to delete: ";
+                getline(cin, itemName);
+                deleteFromRecords(sellers, itemName);
+            }
+                break;
+            case 12:
+            {
+                string itemName;
+                cout << "Enter item name to delete: ";
+                getline(cin, itemName);
+                deleteFromRecords(buyers, itemName);
+            }
+                break;
+            case 13:
+                showArchive(sellerArchive);
+                showArchive(buyerArchive);
+                break;
+            case 14:
+                break;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+        }
+    } while (choice != 14);
+
+    writeRecordsToFile(sellers, "sellers.txt");
+    writeRecordsToFile(buyers, "buyers.txt");
+    writeRecordsToFile(sellerArchive, "seller_archive.txt");
+    writeRecordsToFile(buyerArchive, "buyer_archive.txt");
+
+    return 0;
+}
